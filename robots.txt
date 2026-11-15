@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /hood-2-hood-rydas/admin.html
+Sitemap: https://junearness.github.io/hood-2-hood-rydas/sitemap.xml

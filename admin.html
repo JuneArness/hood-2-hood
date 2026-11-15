@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Club Admin | Hood 2 Hood Rydas</title>
+  <meta name="description" content="Staff sign-in.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#05060a">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Hood 2 Hood Rydas">
+  <meta property="og:title" content="Club Admin | Hood 2 Hood Rydas">
+  <meta property="og:description" content="Staff sign-in.">
+  <meta property="og:image" content="https://junearness.github.io/hood-2-hood-rydas/og-image.jpg">
+  <meta property="og:url" content="https://junearness.github.io/hood-2-hood-rydas/admin.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="./favicon-64.png" type="image/png">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700;800&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css?v=20261114b">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="./index.html"><img class="brand-mark" src="./logo-240.webp" width="240" height="201" alt=""><span class="brand-name"><span class="script">Hood 2 Hood</span><small>RYDAS</small></span></a>
+      <nav class="nav" aria-label="Main"><a href="./index.html">Home</a><a href="./showroom.html">Showroom</a><a href="./events.html">Events</a><a href="./voices.html">Voices</a><a href="./help.html">Find Help</a><a href="./contact.html">Contact</a></nav>
+      <div class="header-cta">
+        <a class="btn btn-holo btn-sm" href="./give.html">Get Involved</a>
+        <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu" data-menu><span></span></button>
+      </div>
+    </div>
+  </header>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile" hidden><a href="./index.html">Home</a><a href="./showroom.html">Showroom</a><a href="./events.html">Events</a><a href="./voices.html">Voices</a><a href="./help.html">Find Help</a><a href="./give.html">Get Involved</a><a href="./contact.html">Contact</a><a class="btn btn-holo" href="./showroom.html">Enter the showroom</a></nav>
+  <main id="main" class="admin">
+    <section class="page-hero" style="padding-bottom:1.5rem">
+      <div class="wrap"><p class="eyebrow">Staff only</p><h1 style="font-size:clamp(2rem,5vw,3.4rem)">Club Admin</h1>
+        <p class="lead">Update the showroom, post events and photos, and read forms and neighborhood stories.</p></div>
+    </section>
+    <div class="wrap">
+      <div class="note" data-not-connected hidden><strong>Not connected yet.</strong> The Admin page works once the club’s Supabase database is connected. Follow “Connect the database” in the README.</div>
+
+      <section data-view="signin" hidden class="panel" style="max-width:520px" aria-labelledby="si-h">
+        <h2 id="si-h">Sign in</h2>
+        <form id="signin-form" class="form-grid" novalidate>
+          <div class="field"><label for="a-email">Email</label><input id="a-email" type="email" autocomplete="username" required></div>
+          <div class="field"><label for="a-pass">Password</label><input id="a-pass" type="password" autocomplete="current-password" required></div>
+          <p class="form-status" data-signin-status role="status" tabindex="-1"></p>
+          <div class="btn-row"><button class="btn btn-holo" type="submit">Sign in</button><button class="btn btn-ghost btn-sm" type="button" data-forgot>Forgot password?</button></div>
+        </form>
+      </section>
+      <section data-view="newpass" hidden class="panel" style="max-width:520px" aria-labelledby="np-h">
+        <h2 id="np-h">Choose a new password</h2>
+        <form id="newpass-form" class="form-grid" novalidate>
+          <div class="field"><label for="a-new">New password</label><input id="a-new" type="password" autocomplete="new-password" minlength="10" required><p class="hint">At least 10 characters. A short phrase is easiest to remember.</p></div>
+          <p class="form-status" data-newpass-status role="status" tabindex="-1"></p>
+          <div><button class="btn btn-holo" type="submit">Save password</button></div>
+        </form>
+      </section>
+      <section data-view="denied" hidden class="panel" style="max-width:560px"><h2>Staff access only</h2><p>This login isn’t on the club team yet. Ask the club owner to add you in Admin &gt; Team.</p><button class="btn" type="button" data-signout>Sign out</button></section>
+
+      <section data-view="app" hidden class="admin-shell" aria-label="Admin">
+        <div class="admin-bar"><span class="who">Signed in as <strong data-who></strong> <span class="pill" data-role></span></span><button class="btn btn-sm" type="button" data-signout>Sign out</button></div>
+        <div class="tabs" role="tablist" aria-label="Admin sections">
+          <button type="button" role="tab" aria-selected="true" data-tab="cars">Showroom</button>
+          <button type="button" role="tab" aria-selected="false" tabindex="-1" data-tab="events">Events</button>
+          <button type="button" role="tab" aria-selected="false" tabindex="-1" data-tab="forms">Forms <span class="badge" data-new-forms hidden></span></button>
+          <button type="button" role="tab" aria-selected="false" tabindex="-1" data-tab="voices">Voices <span class="badge" data-new-voices hidden></span></button>
+          <button type="button" role="tab" aria-selected="false" tabindex="-1" data-tab="team">Team</button>
+        </div>
+        <p class="form-status" data-app-status role="status" tabindex="-1"></p>
+
+        <!-- SHOWROOM -->
+        <div role="tabpanel" data-panel="cars">
+          <div data-car-list-view>
+            <div class="admin-bar" style="margin-bottom:1rem"><h2 style="margin:0;font-size:1.4rem">Cars on the floor</h2><button class="btn btn-holo btn-sm" type="button" data-new-car>+ New car</button></div>
+            <div class="note" data-import hidden style="margin-bottom:1rem"><strong data-import-name></strong> is built into the website but not in the database yet. Move it in so staff can edit its photos and details here. <div style="margin-top:.7rem"><button class="btn btn-sm" type="button" data-import-btn>Move into the database</button></div></div>
+            <ul class="admin-list" data-car-list></ul>
+            <p class="fine" style="margin-top:1rem">Use ↑ ↓ to change the order cars appear in. “Spotlight” puts a car first. Only cars marked <strong>Published</strong> show on the website.</p>
+          </div>
+          <div data-car-edit-view hidden>
+            <div class="admin-bar" style="margin-bottom:1rem"><button class="btn btn-sm" type="button" data-car-back><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6"/></svg> All cars</button><h2 tabindex="-1" data-car-heading style="margin:0;font-size:1.4rem">New car</h2></div>
+            <div class="grid-2" style="align-items:start">
+              <form id="car-form" class="admin-card form-grid" novalidate>
+                <h3>Details</h3>
+                <div class="form-row"><div class="field"><label for="c-name">Car name <span class="req">*</span></label><input id="c-name" name="name" maxlength="60" required placeholder="e.g. MelTee"></div><div class="field"><label for="c-owner">Owner</label><input id="c-owner" name="owner_name" maxlength="80"></div></div>
+                <div class="form-row"><div class="field"><label for="c-year">Year</label><input id="c-year" name="year" inputmode="numeric" maxlength="4" placeholder="1990"></div><div class="field"><label for="c-make">Make</label><input id="c-make" name="make" maxlength="40" placeholder="Lincoln"></div></div>
+                <div class="form-row"><div class="field"><label for="c-model">Model</label><input id="c-model" name="model" maxlength="60" placeholder="Town Car"></div><div class="field"><label for="c-wrap">Paint or wrap name</label><input id="c-wrap" name="wrap_name" maxlength="60" placeholder="Alien Skin"></div></div>
+                <div class="field"><label for="c-tag">One-line tagline</label><input id="c-tag" name="tagline" maxlength="160"></div>
+                <div class="field"><label for="c-story">The story</label><textarea id="c-story" name="story" maxlength="4000" rows="5"></textarea></div>
+                <div class="field"><label for="c-anthem">Anthem (YouTube link)</label><input id="c-anthem" name="anthem_url" type="url" maxlength="300" placeholder="https://youtu.be/..."><p class="hint">Shows a play button in the car’s spec sheet.</p></div>
+                <div class="field"><span style="font-weight:700;font-size:.92rem">Spec sheet</span><div class="spec-rows" data-spec-rows></div><div><button class="btn btn-sm" type="button" data-add-spec>+ Add a line</button></div></div>
+                <h3 style="margin-top:.6rem">Showroom look</h3>
+                <div class="field"><span style="font-weight:700;font-size:.92rem" id="acc-l">Light color</span><div class="swatches" role="group" aria-labelledby="acc-l"><button type="button" class="swatch" style="background:#39f3ff" data-swatch="#39f3ff" aria-label="Cyan" aria-pressed="false"></button><button type="button" class="swatch" style="background:#ff3cac" data-swatch="#ff3cac" aria-label="Magenta" aria-pressed="false"></button><button type="button" class="swatch" style="background:#8b6cff" data-swatch="#8b6cff" aria-label="Violet" aria-pressed="false"></button><button type="button" class="swatch" style="background:#f5c76a" data-swatch="#f5c76a" aria-label="Gold" aria-pressed="false"></button><button type="button" class="swatch" style="background:#b8ff3c" data-swatch="#b8ff3c" aria-label="Lime" aria-pressed="false"></button><button type="button" class="swatch" style="background:#ff5a36" data-swatch="#ff5a36" aria-label="Candy red" aria-pressed="false"></button><button type="button" class="swatch" style="background:#ffffff" data-swatch="#ffffff" aria-label="White" aria-pressed="false"></button><label class="sr-only" for="c-accent">Custom color</label><input type="color" id="c-accent" name="accent" value="#39f3ff"></div></div>
+                <div class="preview-mini" data-preview aria-hidden="true"><div class="led"></div><img alt="" data-preview-img hidden></div>
+                <div class="form-row">
+                  <div class="field"><label for="c-mode">Gallery style</label><select id="c-mode" name="mode"><option value="ring">3D Ring</option><option value="film">Film slideshow</option></select></div>
+                  <div class="field"><label for="c-speed">Seconds per photo</label><div class="range-row"><input id="c-speed" name="speed" type="range" min="2" max="15" value="5"><output for="c-speed" data-speed-out>5s</output></div></div>
+                </div>
+                <label class="toggle"><input type="checkbox" name="featured"> Spotlight (show this car first)</label>
+                <label class="toggle"><input type="checkbox" name="published"> Published (show on the website)</label>
+                <div class="btn-row"><button class="btn btn-holo" type="submit">Save</button><a class="btn btn-sm" href="./showroom.html" target="_blank" rel="noopener">Open showroom<span class="sr-only"> (new tab)</span></a><button class="btn btn-sm danger" type="button" data-del-car hidden>Delete car</button></div>
+              </form>
+              <div class="admin-card" data-car-photos-card>
+                <h3 data-car-photos-h>Photos</h3>
+                <p class="fine" data-car-photos-hint>Save first, then add photos.</p>
+                <div data-car-photo-tools hidden>
+                  <div class="dropzone" data-car-drop>
+                    <p><strong>Add photos</strong> from your phone or computer. Pick as many as you like; they’re resized automatically. The first photo becomes the showroom picture (change it with the ★).</p>
+                    <div class="btn-row" style="justify-content:center">
+                      
+                      <label class="btn btn-holo btn-sm file-btn">Choose photos<input type="file" accept="image/*" multiple data-car-pick></label>
+                      <label class="btn btn-sm file-btn camera-btn">Take a photo<input type="file" accept="image/*" capture="environment" data-car-camera></label>
+                    </div>
+                    <p class="fine desktop-only">Or drag photos onto this box.</p>
+                  </div>
+                  <div data-car-queue hidden><div class="progress-bar"><span data-car-bar></span></div><p class="fine" data-car-ptext aria-live="polite"></p></div>
+                  <ul class="photo-admin-grid" data-car-grid></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EVENTS -->
+        <div role="tabpanel" data-panel="events" hidden>
+          <div data-ev-list-view>
+            <div class="admin-bar" style="margin-bottom:1rem"><h2 style="margin:0;font-size:1.4rem">Events</h2><button class="btn btn-holo btn-sm" type="button" data-new-event>+ New event</button></div>
+            <ul class="admin-list" data-ev-list></ul>
+          </div>
+          <div data-ev-edit-view hidden>
+            <div class="admin-bar" style="margin-bottom:1rem"><button class="btn btn-sm" type="button" data-ev-back><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6"/></svg> All events</button><h2 tabindex="-1" data-ev-heading style="margin:0;font-size:1.4rem">New event</h2></div>
+            <div class="grid-2" style="align-items:start">
+              <form id="event-form" class="admin-card form-grid" novalidate>
+                <h3>Details</h3>
+                <div class="field"><label for="e-title">Title <span class="req">*</span></label><input id="e-title" name="title" maxlength="120" required></div>
+                <div class="form-row"><div class="field"><label for="e-date">Date <span class="req">*</span></label><input id="e-date" name="event_date" type="date" required></div><div class="field"><label for="e-end">End date (multi-day)</label><input id="e-end" name="end_date" type="date"></div></div>
+                <div class="form-row"><div class="field"><label for="e-time">Time</label><input id="e-time" name="time_text" maxlength="80" placeholder="12:00 – 5:00 PM"></div><div class="field"><label for="e-loc">Location</label><input id="e-loc" name="location" maxlength="160" placeholder="Park or church, city"></div></div>
+                <div class="field"><label for="e-sum">Short summary</label><textarea id="e-sum" name="summary" maxlength="400" rows="3"></textarea></div>
+                <div class="field"><label for="e-det">Details</label><textarea id="e-det" name="details" maxlength="4000" rows="5"></textarea></div>
+                <div class="form-row"><div class="field"><label for="e-link">Link (optional, https://)</label><input id="e-link" name="link_url" type="url" maxlength="500"></div><div class="field"><label for="e-linkl">Link button text</label><input id="e-linkl" name="link_label" maxlength="40" placeholder="Register"></div></div>
+                <label class="toggle"><input type="checkbox" name="published"> Published (show on the website)</label>
+                <div class="btn-row"><button class="btn btn-holo" type="submit">Save</button><button class="btn btn-sm danger" type="button" data-del-event hidden>Delete event</button></div>
+              </form>
+              <div class="admin-card" data-ev-photos-card>
+                <h3 data-ev-photos-h>Photos</h3>
+                <p class="fine" data-ev-photos-hint>Save first, then add photos.</p>
+                <div data-ev-photo-tools hidden>
+                  <div class="dropzone" data-ev-drop>
+                    <p><strong>Start with the event flyer.</strong> The flyer is the thumbnail on the Events page and the first picture in the gallery. Then add photos.</p>
+                    <div class="btn-row" style="justify-content:center">
+                      <label class="btn btn-holo btn-sm file-btn">Add flyer<input type="file" accept="image/*" data-ev-flyer></label>
+                      <label class="btn btn-sm file-btn">Choose photos<input type="file" accept="image/*" multiple data-ev-pick></label>
+                      <label class="btn btn-sm file-btn camera-btn">Take a photo<input type="file" accept="image/*" capture="environment" data-ev-camera></label>
+                    </div>
+                    <p class="fine desktop-only">Or drag photos onto this box.</p>
+                  </div>
+                  <div data-ev-queue hidden><div class="progress-bar"><span data-ev-bar></span></div><p class="fine" data-ev-ptext aria-live="polite"></p></div>
+                  <ul class="photo-admin-grid" data-ev-grid></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORMS -->
+        <div role="tabpanel" data-panel="forms" hidden>
+          <div data-rq-list-view>
+            <div class="admin-bar" style="margin-bottom:1rem"><div class="filters" role="group" aria-label="Show"><button type="button" aria-pressed="true" data-kind-filter="">All</button><button type="button" aria-pressed="false" data-kind-filter="donate">Donations</button><button type="button" aria-pressed="false" data-kind-filter="support">Supporters</button><button type="button" aria-pressed="false" data-kind-filter="volunteer">Volunteers</button></div><button class="btn btn-sm" type="button" data-export>Download spreadsheet (CSV)</button></div>
+            <ul class="admin-list" data-rq-list></ul>
+          </div>
+          <div data-rq-detail-view hidden class="admin-card"><button class="btn btn-sm" type="button" data-rq-back><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6"/></svg> All forms</button><div data-rq-detail></div></div>
+        </div>
+
+        <!-- VOICES -->
+        <div role="tabpanel" data-panel="voices" hidden>
+          <div data-st-list-view>
+            <div class="admin-bar" style="margin-bottom:1rem"><div class="filters" role="group" aria-label="Show"><button type="button" aria-pressed="true" data-st-filter="">All</button><button type="button" aria-pressed="false" data-st-filter="pending">Waiting for review</button><button type="button" aria-pressed="false" data-st-filter="approved">On the website</button><button type="button" aria-pressed="false" data-st-filter="hidden">Hidden</button></div></div>
+            <p class="fine">Nothing shows on the Voices page until you press <strong>Approve</strong>. Emails and phone numbers are never shown.</p>
+            <ul class="admin-list" data-st-list></ul>
+          </div>
+          <div data-st-detail-view hidden class="admin-card"><button class="btn btn-sm" type="button" data-st-back><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6"/></svg> All stories</button><div data-st-detail></div></div>
+        </div>
+
+        <!-- TEAM -->
+        <div role="tabpanel" data-panel="team" hidden>
+          <div class="grid-2" style="align-items:start">
+            <div class="admin-card"><h3>Who can sign in</h3><ul class="admin-list" data-team-list></ul></div>
+            <div class="admin-card" data-team-add>
+              <h3>Add a staff member</h3>
+              <ol class="fine" style="padding-left:1.2rem;margin-top:0"><li>In Supabase, open <strong>Authentication &gt; Users &gt; Add user &gt; Create new user</strong>. Type their email and a password, tick <strong>Auto Confirm User</strong>.</li><li>Type the same email here and press Add.</li><li>Send them the password privately. They can change it with “Forgot password?”.</li></ol>
+              <form id="team-form" class="form-grid" novalidate>
+                <div class="field"><label for="t-email">Their email</label><input id="t-email" type="email" required maxlength="160"></div>
+                <div class="field"><label for="t-role">Access</label><select id="t-role"><option value="staff">Staff: showroom, events, forms, voices</option><option value="owner">Owner: everything, plus the team</option></select></div>
+                <div><button class="btn btn-holo btn-sm" type="submit">Add</button></div>
+              </form>
+              <p class="fine" data-team-owner-only hidden>Only an owner account can add or remove staff.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="./data.js?v=20261114b"></script>
+  <script src="./supabase.js?v=20261114b"></script>
+  <script src="./h2h-api.js?v=20261114b"></script>
+  <script src="./site.js?v=20261114b"></script>
+  <script src="./admin.js?v=20261114b"></script>
+</body>
+</html>

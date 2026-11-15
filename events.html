@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Events | Hood 2 Hood Rydas</title>
+  <meta name="description" content="Hood 2 Hood Rydas car shows and drives in neighborhood parks and church lots, with photo galleries from past shows.">
+  <link rel="canonical" href="https://junearness.github.io/hood-2-hood-rydas/events.html">
+  <meta name="theme-color" content="#05060a">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Hood 2 Hood Rydas">
+  <meta property="og:title" content="Events | Hood 2 Hood Rydas">
+  <meta property="og:description" content="Hood 2 Hood Rydas car shows and drives in neighborhood parks and church lots, with photo galleries from past shows.">
+  <meta property="og:image" content="https://junearness.github.io/hood-2-hood-rydas/og-image.jpg">
+  <meta property="og:url" content="https://junearness.github.io/hood-2-hood-rydas/events.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="./favicon-64.png" type="image/png">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700;800&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css?v=20261114b">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="./index.html"><img class="brand-mark" src="./logo-240.webp" width="240" height="201" alt=""><span class="brand-name"><span class="script">Hood 2 Hood</span><small>RYDAS</small></span></a>
+      <nav class="nav" aria-label="Main"><a href="./index.html">Home</a><a href="./showroom.html">Showroom</a><a href="./events.html" aria-current="page">Events</a><a href="./voices.html">Voices</a><a href="./help.html">Find Help</a><a href="./contact.html">Contact</a></nav>
+      <div class="header-cta">
+        <a class="btn btn-holo btn-sm" href="./give.html">Get Involved</a>
+        <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu" data-menu><span></span></button>
+      </div>
+    </div>
+  </header>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile" hidden><a href="./index.html">Home</a><a href="./showroom.html">Showroom</a><a href="./events.html" aria-current="page">Events</a><a href="./voices.html">Voices</a><a href="./help.html">Find Help</a><a href="./give.html">Get Involved</a><a href="./contact.html">Contact</a><a class="btn btn-holo" href="./showroom.html">Enter the showroom</a></nav>
+  <main id="main">
+    <section class="page-hero">
+      <div class="wrap">
+        <p class="eyebrow">Shows &amp; drives</p>
+        <h1>Events</h1>
+        <p class="lead">Car shows in neighborhood parks and church lots. Showing a car? Entry is $50–$100 in non-perishable food. Coming to look? Donations are welcome but never required.</p>
+        <p class="fine">Between seasons the club fundraises for next season’s events.</p>
+      </div>
+    </section>
+    <section class="section" style="padding-top:1rem" aria-labelledby="up-h">
+      <div class="wrap">
+        <h2 id="up-h" class="h3" style="font-size:clamp(1.4rem,3vw,2rem)">Upcoming</h2>
+        <div class="event-grid" data-upcoming><div class="empty-state"><p>Loading events…</p></div></div>
+      </div>
+    </section>
+    <section class="section" style="padding-top:0" aria-labelledby="past-h">
+      <div class="wrap">
+        <h2 id="past-h" style="font-size:clamp(1.4rem,3vw,2rem)">Past shows &amp; photos</h2>
+        <p class="fine">Tap any event to see all of its photos.</p>
+        <div class="event-grid" data-past></div>
+      </div>
+    </section>
+
+    <dialog class="sheet ev-gallery" id="gallery" aria-labelledby="gallery-title">
+      <div class="sheet-head"><div><h2 id="gallery-title">Photos</h2><p data-gallery-meta></p></div><button class="x-btn" type="button" data-close aria-label="Close photos"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      <div class="sheet-body"><div data-gallery-details></div><ul class="thumbs" data-gallery-grid></ul></div>
+    </dialog>
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+      <div class="lb-top"><span data-lb-count></span><button class="x-btn" type="button" data-lb-close aria-label="Close photo"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+      <div class="lb-stage"><img alt="" data-lb-img>
+        <button class="lb-nav lb-prev" type="button" data-lb-prev aria-label="Previous photo"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button class="lb-nav lb-next" type="button" data-lb-next aria-label="Next photo"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6l6 6-6 6"/></svg></button></div>
+      <p class="lb-cap" data-lb-cap></p>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img class="footer-logo" src="./logo-480.webp" width="480" height="403" alt="Hood 2 Hood Rydas" loading="lazy">
+          <p>A lowrider car club that partners with neighborhood parks and churches to turn car shows into food, clothing, shoes and school supplies for the block.</p>
+        </div>
+        <div>
+          <h2>Explore</h2>
+          <ul><li><a href="./showroom.html">Showroom</a></li><li><a href="./events.html">Events</a></li><li><a href="./voices.html">Speak for your block</a></li><li><a href="./help.html">Find food, clothing, health care &amp; shelter</a></li></ul>
+        </div>
+        <div>
+          <h2>Pitch in</h2>
+          <ul><li><a href="./give.html#donate">Donate</a></li><li><a href="./give.html#support">Become a supporter</a></li><li><a href="./give.html#volunteer">Volunteer</a></li><li><a href="./contact.html" data-email-link>Contact</a></li></ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; <span data-year>2026</span> Hood 2 Hood Rydas</span>
+        <span>Website by SAP Development Solutions, LLC</span>
+      </div>
+    </div>
+  </footer>
+  <script src="./data.js?v=20261114b"></script>
+  <script src="./supabase.js?v=20261114b"></script>
+  <script src="./h2h-api.js?v=20261114b"></script>
+  <script src="./site.js?v=20261114b"></script>
+  <script src="./events.js?v=20261114b"></script>
+</body>
+</html>
