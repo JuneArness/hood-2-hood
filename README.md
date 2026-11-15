@@ -15,7 +15,30 @@ Website by SAP Development Solutions, LLC.
 | Find Help | `help.html` | Food, clothing, health care and shelter resources for Grand Rapids and Michigan, with a downloadable PDF guide (`h2h-find-help-guide.pdf`) |
 | Get Involved | `give.html` | Donate, Become a supporter, and Volunteer forms (`give.html#donate`, `#support`, `#volunteer`) |
 | Contact | `contact.html` | H2HRydas@gmail.com |
-| Admin | `admin.html` | Staff only (not linked anywhere on the site). Manage the Showroom, Events, Forms, Voices and the Team |
+| Admin | `admin.html` | Staff only (not linked anywhere on the site). Manage the Showroom, Events, **Members**, Forms, Voices and the Team |
+
+## Your admin page
+
+**Address:** `https://junearness.github.io/hood-2-hood-rydas/admin.html`. Bookmark it on your phone and computer. It's left off the menus on purpose.
+
+The admin page needs the database (step 2 below) before anyone can sign in. Until then it shows "Not connected yet." Once it's connected, you and your staff can add the following from a phone or computer, with no help from Claude:
+
+- **Showroom:** cars, photos, light color, gallery style, and the order cars appear in
+- **Events:** flyer first, then photos
+- **Members:** name, title, their ride, a short bio and a photo. These show on Home under "Meet the Rydas"
+- **Forms** and **Voices** inboxes
+- **Team:** who can sign in (owner only)
+
+## The anthem: "Alien Skin" by June Arness
+
+The bar under the header on every page scrolls the artist, the song, the album (*The Art-of-Fact (Un Earthed)*) and the Spotify, Apple Music, iHeart, Pandora and YouTube links. It also has a Play/Pause button and a button that stops the scrolling.
+
+**To make the song play:** upload your MP3 to the repository, next to `index.html`, named exactly **`alien-skin.mp3`**. GitHub's web upload allows files up to 25 MB.
+
+- **Playing once:** the song plays once per visit. When the visitor moves to another page, it picks up where it left off, and it won't replay after it finishes unless they press Play.
+- **Waiting for a tap:** most browsers block sound until the visitor taps or clicks, so it often starts on their first tap.
+- **No file yet:** without the file, the Play button opens the song on YouTube.
+- **Turning autoplay off:** in `data.js`, set `autoplayOnce: false`. The button still plays it.
 
 ## 1. Put the site on GitHub Pages
 

@@ -16,14 +16,14 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="./favicon-64.png" type="image/png">
   <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700;800&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=20261114b">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Titan+One&family=Unbounded:wght@500;600;700;800&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css?v=20261114d">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="wrap">
-      <a class="brand" href="./index.html"><img class="brand-mark" src="./logo-240.webp" width="240" height="201" alt=""><span class="brand-name"><span class="script">Hood 2 Hood</span><small>RYDAS</small></span></a>
+      <a class="brand" href="./index.html"><img class="brand-mark" src="./logo-240.webp" width="240" height="201" alt=""><span class="brand-name"><span class="bn-top">Hood <b>2</b> Hood</span><span class="bn-bot">Rydas</span></span></a>
       <nav class="nav" aria-label="Main"><a href="./index.html">Home</a><a href="./showroom.html">Showroom</a><a href="./events.html">Events</a><a href="./voices.html">Voices</a><a href="./help.html">Find Help</a><a href="./contact.html">Contact</a></nav>
       <div class="header-cta">
         <a class="btn btn-holo btn-sm" href="./give.html">Get Involved</a>
@@ -64,6 +64,7 @@
         <div class="tabs" role="tablist" aria-label="Admin sections">
           <button type="button" role="tab" aria-selected="true" data-tab="cars">Showroom</button>
           <button type="button" role="tab" aria-selected="false" tabindex="-1" data-tab="events">Events</button>
+          <button type="button" role="tab" aria-selected="false" tabindex="-1" data-tab="members">Members</button>
           <button type="button" role="tab" aria-selected="false" tabindex="-1" data-tab="forms">Forms <span class="badge" data-new-forms hidden></span></button>
           <button type="button" role="tab" aria-selected="false" tabindex="-1" data-tab="voices">Voices <span class="badge" data-new-voices hidden></span></button>
           <button type="button" role="tab" aria-selected="false" tabindex="-1" data-tab="team">Team</button>
@@ -163,6 +164,41 @@
           </div>
         </div>
 
+        <!-- MEMBERS -->
+        <div role="tabpanel" data-panel="members" hidden>
+          <div data-mb-list-view>
+            <div class="admin-bar" style="margin-bottom:1rem"><h2 style="margin:0;font-size:1.4rem">Club members</h2><button class="btn btn-holo btn-sm" type="button" data-new-member>+ New member</button></div>
+            <div class="note" data-mb-import hidden style="margin-bottom:1rem">The website is showing the three founders from <code>data.js</code>. <button class="btn btn-sm" type="button" data-mb-import-btn style="margin-left:.4rem">Add them here</button> so you can give them photos and edit them.</div>
+            <ul class="admin-list" data-mb-list></ul>
+            <p class="fine" style="margin-top:1rem">Members marked <strong>Published</strong> show on the Home page under “Meet the Rydas”, in this order. Use ↑ ↓ to change it.</p>
+          </div>
+          <div data-mb-edit-view hidden>
+            <div class="admin-bar" style="margin-bottom:1rem"><button class="btn btn-sm" type="button" data-mb-back><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6"/></svg> All members</button><h2 tabindex="-1" data-mb-heading style="margin:0;font-size:1.4rem">New member</h2></div>
+            <div class="grid-2" style="align-items:start">
+              <form id="member-form" class="admin-card form-grid" novalidate>
+                <div class="field"><label for="m-name">Name <span class="req">*</span></label><input id="m-name" name="name" maxlength="80" required></div>
+                <div class="form-row"><div class="field"><label for="m-role">Title or role</label><input id="m-role" name="role" maxlength="60" placeholder="Member, Treasurer…"></div><div class="field"><label for="m-ride">Their ride</label><input id="m-ride" name="ride" maxlength="80" placeholder="1964 Impala"></div></div>
+                <div class="field"><label for="m-bio">Short bio (optional)</label><textarea id="m-bio" name="bio" maxlength="600" rows="4"></textarea></div>
+                <label class="toggle"><input type="checkbox" name="published"> Published (show on the website)</label>
+                <div class="btn-row"><button class="btn btn-holo" type="submit">Save</button><button class="btn btn-sm danger" type="button" data-del-member hidden>Delete member</button></div>
+              </form>
+              <div class="admin-card">
+                <h3>Photo</h3>
+                <p class="fine" data-mb-photo-hint>Save first, then add a photo.</p>
+                <div data-mb-photo-tools hidden>
+                  <div class="member-photo"><img data-mb-photo alt="" hidden><span class="monogram" data-mb-mono aria-hidden="true"></span></div>
+                  <div class="btn-row" style="margin-top:1rem">
+                    <label class="btn btn-holo btn-sm file-btn">Choose photo<input type="file" accept="image/*" data-mb-pick></label>
+                    <label class="btn btn-sm file-btn camera-btn">Take a photo<input type="file" accept="image/*" capture="user" data-mb-camera></label>
+                    <button class="btn btn-sm danger" type="button" data-mb-remove-photo hidden>Remove photo</button>
+                  </div>
+                  <p class="fine" data-mb-ptext aria-live="polite"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- FORMS -->
         <div role="tabpanel" data-panel="forms" hidden>
           <div data-rq-list-view>
@@ -191,7 +227,7 @@
               <ol class="fine" style="padding-left:1.2rem;margin-top:0"><li>In Supabase, open <strong>Authentication &gt; Users &gt; Add user &gt; Create new user</strong>. Type their email and a password, tick <strong>Auto Confirm User</strong>.</li><li>Type the same email here and press Add.</li><li>Send them the password privately. They can change it with “Forgot password?”.</li></ol>
               <form id="team-form" class="form-grid" novalidate>
                 <div class="field"><label for="t-email">Their email</label><input id="t-email" type="email" required maxlength="160"></div>
-                <div class="field"><label for="t-role">Access</label><select id="t-role"><option value="staff">Staff: showroom, events, forms, voices</option><option value="owner">Owner: everything, plus the team</option></select></div>
+                <div class="field"><label for="t-role">Access</label><select id="t-role"><option value="staff">Staff: showroom, events, members, forms, voices</option><option value="owner">Owner: everything, plus the team</option></select></div>
                 <div><button class="btn btn-holo btn-sm" type="submit">Add</button></div>
               </form>
               <p class="fine" data-team-owner-only hidden>Only an owner account can add or remove staff.</p>
@@ -201,10 +237,10 @@
       </section>
     </div>
   </main>
-  <script src="./data.js?v=20261114b"></script>
-  <script src="./supabase.js?v=20261114b"></script>
-  <script src="./h2h-api.js?v=20261114b"></script>
-  <script src="./site.js?v=20261114b"></script>
-  <script src="./admin.js?v=20261114b"></script>
+  <script src="./data.js?v=20261114d"></script>
+  <script src="./supabase.js?v=20261114d"></script>
+  <script src="./h2h-api.js?v=20261114d"></script>
+  <script src="./site.js?v=20261114d"></script>
+  <script src="./admin.js?v=20261114d"></script>
 </body>
 </html>

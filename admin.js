@@ -89,7 +89,7 @@
   /* ---------------- data ---------------- */
   var OV = { cars: [], events: [], requests: [], stories: [] };
   function load() {
-    return A.rpc("admin_overview").then(function (ov) { OV = ov; drawCars(); drawEvents(); drawRequests(); drawStories(); }).catch(fail);
+    return A.rpc("admin_overview").then(function (ov) { OV = ov; OV.members = OV.members || []; drawCars(); drawEvents(); drawMembers(); drawRequests(); drawStories(); }).catch(fail);
   }
 
   /* ================= photo manager (shared by cars and events) ================= */
@@ -384,6 +384,91 @@
     if (!EV || !confirm("Delete “" + EV.title + "” and all " + plural((EV.photos || []).length, "photo") + "? This can’t be undone.")) return;
     A.rpc("admin_delete_event", { p_id: EV.id }).then(function (paths) { return A.removeFiles(paths).catch(function () {}); })
       .then(function () { EV = null; editorView("ev", false); load(); flash("Event deleted."); }).catch(fail);
+  });
+
+  /* ================= MEMBERS ================= */
+  var MB = null, mbForm = $("#member-form");
+  function drawMembers() {
+    var ul = $("[data-mb-list]");
+    $("[data-mb-import]").hidden = OV.members.length > 0 || !(C.leaders || []).length;
+    if (!OV.members.length) { ul.innerHTML = '<li class="empty-state"><p>No members yet. Press <strong>+ New member</strong>.</p></li>'; return; }
+    ul.innerHTML = OV.members.map(function (m, i) {
+      var u = A.photoUrl(m.photo);
+      return '<li style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.5rem;align-items:center"><button type="button" class="admin-item" data-mb-edit="' + esc(m.id) + '">' +
+        (u ? '<img src="' + esc(u) + '" alt="" loading="lazy" style="border-radius:50%;width:48px;height:48px">' : '<span class="admin-thumb-ph" aria-hidden="true" style="border-radius:50%;width:48px">' + esc((m.name || "?")[0]) + "</span>") +
+        '<span class="admin-item-main"><strong>' + esc(m.name) + "</strong><span>" + esc([m.role, m.ride].filter(Boolean).join(" · ") || "No details yet") + "</span></span>" +
+        '<span class="pill ' + (m.published ? "pill-live" : "pill-draft") + '">' + (m.published ? "Published" : "Draft") + "</span></button>" +
+        '<span style="display:grid;gap:.3rem"><button type="button" class="round" style="width:44px;height:44px" data-mb-move="-1" data-id="' + esc(m.id) + '" aria-label="Move ' + esc(m.name) + ' earlier"' + (i === 0 ? " disabled" : "") + ">&uarr;</button>" +
+        '<button type="button" class="round" style="width:44px;height:44px" data-mb-move="1" data-id="' + esc(m.id) + '" aria-label="Move ' + esc(m.name) + ' later"' + (i === OV.members.length - 1 ? " disabled" : "") + ">&darr;</button></span></li>";
+    }).join("");
+  }
+  $("[data-mb-list]").addEventListener("click", function (e) {
+    var mv = e.target.closest("[data-mb-move]");
+    if (mv) {
+      var id = mv.getAttribute("data-id"), d = mv.getAttribute("data-mb-move");
+      A.rpc("admin_move_member", { p_id: id, p_dir: +d }).then(load).then(function () { flash("Order updated."); var nb = $('[data-mb-move="' + d + '"][data-id="' + id + '"]'); if (nb && !nb.disabled) nb.focus(); }).catch(fail);
+      return;
+    }
+    var b = e.target.closest("[data-mb-edit]"); if (b) openMember(b.getAttribute("data-mb-edit"));
+  });
+  $("[data-new-member]").addEventListener("click", function () { openMember(null); });
+  $("[data-mb-back]").addEventListener("click", function () { if (busyUpload()) return; MB = null; editorView("mb", false); load(); });
+  $("[data-mb-import-btn]").addEventListener("click", function () {
+    var b = this; b.disabled = true;
+    (C.leaders || []).reduce(function (pr, l) {
+      return pr.then(function () { return A.rpc("admin_save_member", { p: { name: l.name, role: l.role || "", published: true } }); });
+    }, Promise.resolve()).then(load).then(function () { flash("Founders added. Tap one to add a photo."); }).catch(fail).then(function () { b.disabled = false; });
+  });
+  function drawMemberPhoto() {
+    var has = !!MB; $("[data-mb-photo-tools]").hidden = !has; $("[data-mb-photo-hint]").hidden = has;
+    if (!has) return;
+    var img = $("[data-mb-photo]"), u = A.photoUrl(MB.photo);
+    img.hidden = !u; if (u) img.src = u;
+    $("[data-mb-mono]").hidden = !!u; $("[data-mb-mono]").textContent = (MB.name || "?")[0].toUpperCase();
+    $("[data-mb-remove-photo]").hidden = !u;
+  }
+  function openMember(id) {
+    clear(appStatus); mbForm.reset(); $$(".field.invalid", mbForm).forEach(function (f) { f.classList.remove("invalid"); });
+    MB = id ? OV.members.filter(function (m) { return m.id === id; })[0] || null : null;
+    $("[data-mb-heading]").textContent = MB ? MB.name : "New member"; $("[data-del-member]").hidden = !MB;
+    if (MB) { ["name", "role", "ride", "bio"].forEach(function (k) { mbForm.elements[k].value = MB[k] || ""; }); mbForm.elements.published.checked = !!MB.published; }
+    drawMemberPhoto(); editorView("mb", true); (MB ? $("[data-mb-heading]") : $("#m-name")).focus();
+  }
+  function refreshMember() { return load().then(function () { MB = OV.members.filter(function (m) { return m.id === MB.id; })[0] || null; drawMemberPhoto(); }); }
+  mbForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var n = mbForm.elements.name;
+    if (invalid(mbForm, [[n, n.value.trim() !== ""]])) return;
+    var p = { name: n.value.trim(), role: mbForm.elements.role.value.trim(), ride: mbForm.elements.ride.value.trim(), bio: mbForm.elements.bio.value.trim(), published: mbForm.elements.published.checked };
+    var isNew = !MB; if (MB) p.id = MB.id;
+    var b = mbForm.querySelector('button[type="submit"]'); b.disabled = true;
+    A.rpc("admin_save_member", { p: p }).then(function (id) {
+      return load().then(function () {
+        MB = OV.members.filter(function (m) { return m.id === id; })[0]; $("[data-mb-heading]").textContent = MB.name; $("[data-del-member]").hidden = false; drawMemberPhoto();
+        flash(isNew ? "Member saved. Now add a photo." : (p.published ? "Saved. They’re on the Home page." : "Saved as a draft (not shown on the website)."));
+      });
+    }).catch(fail).then(function () { b.disabled = false; });
+  });
+  function memberPhoto(list) {
+    var f = list && list[0]; if (!f || !MB) return;
+    if (uploading) return busyUpload();
+    uploading = true; var t = $("[data-mb-ptext]"); t.textContent = "Uploading…";
+    A.uploadPhoto(MB.id, f).then(function (path) { return A.rpc("admin_set_member_photo", { p_id: MB.id, p_path: path }); })
+      .then(function (old) { return old ? A.removeFiles([old]).catch(function () {}) : null; })
+      .then(refreshMember).then(function () { t.textContent = ""; flash("Photo saved."); }).catch(function (err) { t.textContent = ""; fail(err); })
+      .then(function () { uploading = false; });
+  }
+  $("[data-mb-pick]").addEventListener("change", function (e) { memberPhoto(e.target.files); e.target.value = ""; });
+  $("[data-mb-camera]").addEventListener("change", function (e) { memberPhoto(e.target.files); e.target.value = ""; });
+  $("[data-mb-remove-photo]").addEventListener("click", function () {
+    if (!MB || !confirm("Remove this photo?")) return;
+    A.rpc("admin_set_member_photo", { p_id: MB.id, p_path: null }).then(function (old) { return old ? A.removeFiles([old]).catch(function () {}) : null; })
+      .then(refreshMember).then(function () { flash("Photo removed."); }).catch(fail);
+  });
+  $("[data-del-member]").addEventListener("click", function () {
+    if (!MB || !confirm("Delete " + MB.name + " from the club list? This can’t be undone.")) return;
+    A.rpc("admin_delete_member", { p_id: MB.id }).then(function (path) { return path ? A.removeFiles([path]).catch(function () {}) : null; })
+      .then(function () { MB = null; editorView("mb", false); load(); flash("Member deleted."); }).catch(fail);
   });
 
   /* ================= FORMS ================= */

@@ -111,6 +111,20 @@ create table public.stories (
 );
 create index stories_created on public.stories (created_at desc);
 
+-- Club members shown on the website (Home > The Club). Staff add and edit them in Admin > Members.
+create table public.members (
+  id uuid primary key default gen_random_uuid(),
+  name text not null check (length(name) between 1 and 80),
+  role text not null default '' check (length(role) <= 60),       -- e.g. Founder & President
+  ride text not null default '' check (length(ride) <= 80),       -- e.g. MelTee, 1990 Lincoln Town Car
+  bio text not null default '' check (length(bio) <= 600),
+  photo_path text check (photo_path is null or photo_path ~ '^[0-9a-f-]{36}/[A-Za-z0-9_-]{1,80}\.(jpg|jpeg|png|webp)$'),
+  sort int not null default 0,
+  published boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table public.audit_log (
   id bigint generated always as identity primary key,
   actor uuid,
@@ -126,6 +140,7 @@ alter table public.events enable row level security;
 alter table public.photos enable row level security;
 alter table public.requests enable row level security;
 alter table public.stories enable row level security;
+alter table public.members enable row level security;
 alter table public.audit_log enable row level security;
 revoke all on all tables in schema public from anon, authenticated;
 
@@ -212,6 +227,10 @@ create function public.list_events() returns jsonb language sql stable security 
       'cover', (select path from public.photos where id = e.cover_photo_id),
       'photos', public._photos('event', e.id)) order by e.event_date desc, e.created_at desc), '[]')
   from public.events e where e.published $$;
+
+create function public.list_members() returns jsonb language sql stable security definer set search_path = public as $$
+  select coalesce(jsonb_agg(jsonb_build_object('id', id, 'name', name, 'role', role, 'ride', ride, 'bio', bio, 'photo', photo_path)
+    order by sort, created_at), '[]') from public.members where published $$;
 
 -- Approved stories only. Never returns email or phone; the name only if the writer allowed it.
 create function public.list_stories() returns jsonb language sql stable security definer set search_path = public as $$
@@ -300,7 +319,9 @@ begin
     'requests', coalesce((select jsonb_agg(jsonb_build_object('id', id, 'ref', ref, 'kind', kind, 'name', name, 'organization', organization,
         'email', email, 'status', status, 'created_at', created_at) order by created_at desc) from public.requests), '[]'),
     'stories', coalesce((select jsonb_agg(jsonb_build_object('id', id, 'ref', ref, 'neighborhood', neighborhood, 'city', city,
-        'status', status, 'created_at', created_at, 'preview', left(story, 90)) order by created_at desc) from public.stories), '[]'));
+        'status', status, 'created_at', created_at, 'preview', left(story, 90)) order by created_at desc) from public.stories), '[]'),
+    'members', coalesce((select jsonb_agg(jsonb_build_object('id', id, 'name', name, 'role', role, 'ride', ride, 'bio', bio, 'photo', photo_path,
+        'published', published) order by sort, created_at) from public.members), '[]'));
 end $$;
 
 -- ---- cars (showroom)
@@ -587,6 +608,67 @@ begin
   perform public._log('story.delete', p_id::text);
 end $$;
 
+-- ---- members (Home > The Club)
+create function public.admin_save_member(p jsonb) returns uuid language plpgsql security definer set search_path = public as $$
+declare v_id uuid;
+begin
+  perform public._require_admin();
+  if public._txt(p, 'name', 80) = '' then raise exception 'INVALID|Please enter the member’s name.'; end if;
+  if nullif(p ->> 'id', '') is null then
+    insert into public.members (name, role, ride, bio, sort, published)
+    values (public._txt(p, 'name', 80), public._txt(p, 'role', 60), public._txt(p, 'ride', 80), public._txt(p, 'bio', 600),
+      coalesce((select max(sort) + 1 from public.members), 1), coalesce((p ->> 'published')::boolean, false))
+    returning id into v_id;
+    perform public._log('member.create', v_id::text);
+  else
+    update public.members set name = public._txt(p, 'name', 80), role = public._txt(p, 'role', 60), ride = public._txt(p, 'ride', 80),
+      bio = public._txt(p, 'bio', 600), published = coalesce((p ->> 'published')::boolean, false), updated_at = now()
+    where id = (p ->> 'id')::uuid returning id into v_id;
+    if v_id is null then raise exception 'NOT_FOUND|Member not found.'; end if;
+    perform public._log('member.update', v_id::text);
+  end if;
+  return v_id;
+end $$;
+
+-- Sets the member's photo (already uploaded to <member id>/...). Returns the old photo path so the page can delete that file.
+create function public.admin_set_member_photo(p_id uuid, p_path text) returns text language plpgsql security definer set search_path = public, storage as $$
+declare v_old text;
+begin
+  perform public._require_admin();
+  select photo_path into v_old from public.members where id = p_id;
+  if not found then raise exception 'NOT_FOUND|Member not found.'; end if;
+  if p_path is not null then
+    if p_path !~ ('^' || p_id::text || '/[A-Za-z0-9_-]{1,80}\.(jpg|jpeg|png|webp)$') then raise exception 'INVALID|Photo path not allowed.'; end if;
+    if not exists (select 1 from storage.objects o where o.bucket_id = 'media' and o.name = p_path) then
+      raise exception 'INVALID|The photo didn’t finish uploading. Please try again.'; end if;
+  end if;
+  update public.members set photo_path = p_path, updated_at = now() where id = p_id;
+  return case when v_old is distinct from p_path then v_old end;
+end $$;
+
+create function public.admin_move_member(p_id uuid, p_dir int) returns void language plpgsql security definer set search_path = public as $$
+declare me public.members; other public.members;
+begin
+  perform public._require_admin();
+  update public.members m set sort = x.rn from (select id, row_number() over (order by sort, created_at) as rn from public.members) x where m.id = x.id;
+  select * into me from public.members where id = p_id;
+  if me.id is null then raise exception 'NOT_FOUND|Member not found.'; end if;
+  select * into other from public.members where sort = me.sort + sign(p_dir)::int;
+  if other.id is null then return; end if;
+  update public.members set sort = other.sort where id = me.id;
+  update public.members set sort = me.sort where id = other.id;
+end $$;
+
+create function public.admin_delete_member(p_id uuid) returns text language plpgsql security definer set search_path = public as $$
+declare v_path text;
+begin
+  perform public._require_admin();
+  delete from public.members where id = p_id returning photo_path into v_path;
+  if not found then raise exception 'NOT_FOUND|Member not found.'; end if;
+  perform public._log('member.delete', p_id::text);
+  return v_path;
+end $$;
+
 -- ---- team (owner only). New staff first get a login in Supabase > Authentication > Users > Add user.
 create function public.admin_team() returns jsonb language plpgsql stable security definer set search_path = public as $$
 begin
@@ -617,7 +699,7 @@ end $$;
 
 -- ------------------------------------------------------------------ who can call what
 revoke execute on all functions in schema public from public, anon, authenticated;
-grant execute on function public.list_showroom(), public.list_events(), public.list_stories(), public.submit_request(jsonb),
+grant execute on function public.list_showroom(), public.list_events(), public.list_stories(), public.list_members(), public.submit_request(jsonb),
   public.submit_story(jsonb), public.is_admin() to anon, authenticated;
 grant execute on function public.admin_me(), public.admin_overview(),
   public.admin_get_car(uuid), public.admin_save_car(jsonb), public.admin_move_car(uuid, int), public.admin_delete_car(uuid),
@@ -626,5 +708,6 @@ grant execute on function public.admin_me(), public.admin_overview(),
   public.admin_set_cover(uuid), public.admin_delete_photo(uuid),
   public.admin_get_request(uuid), public.admin_update_request(uuid, text, text), public.admin_delete_request(uuid), public.admin_export_requests(),
   public.admin_get_story(uuid), public.admin_update_story(uuid, text, text), public.admin_delete_story(uuid),
+  public.admin_save_member(jsonb), public.admin_set_member_photo(uuid, text), public.admin_move_member(uuid, int), public.admin_delete_member(uuid),
   public.admin_team(), public.admin_add_member(text, text), public.admin_remove_member(uuid) to authenticated;
 alter default privileges in schema public revoke execute on functions from public, anon, authenticated;

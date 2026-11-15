@@ -91,12 +91,17 @@ p { margin: 0 0 1em; }
 /* ---------- header ---------- */
 .site-header { position: fixed; inset: 0 0 auto; height: var(--header-h); z-index: 100; display: flex; align-items: center;
   background: linear-gradient(180deg, rgba(5,6,10,.9), rgba(5,6,10,.55)); backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4); border-bottom: 1px solid var(--line); }
-.site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.site-header { flex-direction: column; align-items: stretch; }
+.site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 72px; flex: none; }
 .brand { display: inline-flex; align-items: center; gap: .7rem; color: var(--text); text-decoration: none; min-width: 0; }
 .brand-mark { width: auto; height: 52px; flex: none; filter: drop-shadow(0 4px 14px rgba(255, 70, 40, .35)); }
-.brand-name { display: grid; line-height: 1; }
-.brand-name .script { font-size: 1.45rem; }
-.brand-name small { font-family: var(--font-display); font-size: .6rem; letter-spacing: .5em; color: var(--muted); margin-top: .2rem; }
+.brand-name { display: grid; line-height: .95; font-family: "Titan One", "Arial Black", Impact, sans-serif; font-weight: 400; text-transform: uppercase; }
+.brand-name .bn-top, .brand-name .bn-bot { background: var(--chrome); -webkit-background-clip: text; background-clip: text; color: transparent;
+  -webkit-text-stroke: 1px #d1172f; paint-order: stroke fill; filter: drop-shadow(0 2px 0 #000); }
+.brand-name .bn-top { font-size: 1.32rem; letter-spacing: .01em; }
+.brand-name .bn-top b { font-weight: 400; background: linear-gradient(180deg, #fff3a0 0%, #ffb21a 40%, #ff5a14 75%, #c8160f 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: 1px #6b0b05; }
+.brand-name .bn-bot { font-size: 1.05rem; letter-spacing: .14em; transform: skewX(-10deg); transform-origin: left; padding-left: .55rem; }
+@media (max-width: 380px) { .brand-name .bn-top { font-size: 1.08rem; } .brand-name .bn-bot { font-size: .9rem; } .brand-mark { height: 44px; } }
 .nav { display: flex; align-items: center; gap: .2rem; }
 .nav a { position: relative; padding: .55rem .8rem; border-radius: 999px; color: var(--muted); text-decoration: none; font-weight: 600; font-size: .95rem; }
 .nav a:hover, .nav a[aria-current="page"] { color: #fff; }
@@ -640,3 +645,65 @@ body.showroom-page::before { display: none; }
   .print-foot { font-size: 9pt; color: #555; margin-top: .4rem; }
   .sr-only { display: none !important; }
 }
+
+/* ---------- anthem bar (under the header) ---------- */
+body.has-anthem { --header-h: 116px; }
+.anthem-bar { position: relative; height: 44px; flex: none; display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; align-items: center; gap: .6rem; padding: 0 max(var(--gutter), calc((100% - var(--wrap)) / 2));
+  border-top: 1px solid rgba(255,255,255,.08); background: linear-gradient(90deg, rgba(57,243,255,.08), rgba(139,108,255,.08) 35%, rgba(255,60,172,.08) 70%, rgba(245,199,106,.08)), rgba(3,4,8,.92); }
+.tk-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line-2); background: rgba(255,255,255,.06); color: #fff; display: grid; place-items: center; cursor: pointer; padding: 0; position: relative; }
+.tk-btn:hover { background: rgba(255,255,255,.14); }
+.tk-btn .icon { width: 16px; height: 16px; }
+.tk-play { background: var(--holo); background-size: 200% 100%; border: 0; color: #05060a; }
+.tk-play .icon { fill: currentColor; stroke: currentColor; }
+.tk-eq { display: none; }
+.tk-playing .tk-play .icon { opacity: 0; }
+.tk-playing .tk-eq { position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center; gap: 2px; padding-bottom: 10px; }
+.tk-eq i { width: 3px; height: 14px; background: #05060a; border-radius: 2px; animation: eq .9s ease-in-out infinite; transform-origin: bottom; }
+.tk-eq i:nth-child(2) { animation-delay: -.3s; } .tk-eq i:nth-child(3) { animation-delay: -.6s; }
+@keyframes eq { 0%, 100% { transform: scaleY(.3); } 50% { transform: scaleY(1); } }
+.tk-play:hover .tk-eq, .tk-play:focus-visible .tk-eq { display: none; }
+.tk-playing .tk-play:hover .icon, .tk-playing .tk-play:focus-visible .icon { opacity: 1; }
+.tk-cover { width: 32px; height: 32px; border-radius: 6px; object-fit: cover; box-shadow: 0 0 0 1px rgba(255,255,255,.2); }
+.tk-viewport { overflow: hidden; min-width: 0; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
+.tk-track { display: flex; width: max-content; animation: tk 42s linear infinite; }
+.anthem-bar:hover .tk-track, .anthem-bar:focus-within .tk-track, .tk-paused .tk-track { animation-play-state: paused; }
+@keyframes tk { to { transform: translateX(-50%); } }
+.tk-group { display: inline-flex; align-items: center; gap: 1.6rem; padding-right: 1.6rem; white-space: nowrap; font-size: .86rem; }
+.tk-item { display: inline-flex; align-items: center; gap: .55rem; }
+.tk-label { font-family: var(--font-display); font-size: .6rem; letter-spacing: .22em; text-transform: uppercase; color: #05060a; background: var(--holo); padding: .2rem .5rem; border-radius: 999px; font-weight: 700; }
+.tk-artist { font-family: "Titan One", var(--font-display); font-size: .95rem; letter-spacing: .03em; color: #fff; }
+.tk-song { font-weight: 800; color: #9ff9ff; }
+.tk-album { color: #cfd5e2; } .tk-album em { color: #fff; font-style: normal; font-weight: 700; }
+.tk-sep { color: var(--dim); }
+.tk-listen { color: var(--muted); font-size: .8rem; }
+.tk-link { display: inline-flex; align-items: center; min-height: 26px; padding: .15rem .65rem; border-radius: 999px; font-weight: 800; font-size: .78rem; text-decoration: none; color: #fff; border: 1px solid transparent; transition: transform .2s, filter .2s; }
+.tk-link:hover { color: #fff; transform: translateY(-1px); filter: brightness(1.15); }
+.tk-spotify { background: #1db954; color: #04130a; } .tk-spotify:hover { color: #04130a; }
+.tk-applemusic { background: #d4153f; }
+.tk-iheart { background: #c6002b; }
+.tk-pandora { background: #2759e8; }
+.tk-youtube { background: #cc0000; }
+.tk-ride { color: var(--muted); font-size: .82rem; } .tk-ride strong { color: #fff; }
+.tk-still .tk-viewport { overflow-x: auto; mask-image: none; -webkit-mask-image: none; scrollbar-width: none; }
+.tk-still .tk-track { animation: none; }
+.tk-still .tk-group[aria-hidden] { display: none; }
+@media (max-width: 560px) { .tk-cover { display: none; } .anthem-bar { gap: .45rem; } }
+
+/* song card on Home */
+.song-card { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: clamp(1.4rem, 4vw, 2.6rem); align-items: center; padding: clamp(1.4rem, 4vw, 2.4rem); border-radius: 24px; border: 1px solid var(--line-2);
+  background: radial-gradient(ellipse at 0% 50%, rgba(57,243,255,.12), transparent 55%), radial-gradient(ellipse at 100% 0%, rgba(255,60,172,.12), transparent 50%), var(--bg-2); }
+.song-cover { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 16px; box-shadow: 0 30px 60px -20px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.15); }
+.song-card h2 { margin-bottom: .4rem; }
+.song-by { display: block; font-family: "Titan One", var(--font-display); font-weight: 400; font-size: .55em; letter-spacing: .04em; color: var(--muted); margin-top: .3rem; }
+.stream-row { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.2rem; }
+.stream-row .tk-link { min-height: 42px; padding: .5rem 1rem; font-size: .9rem; }
+@media (max-width: 680px) { .song-card { grid-template-columns: minmax(0, 1fr); } .song-cover { max-width: 220px; } }
+
+/* members */
+.member-pic { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; margin: 0 auto 1.2rem; box-shadow: 0 0 0 3px #05060a, 0 0 0 5px rgba(255,60,172,.7), 0 14px 40px -12px rgba(139,108,255,.7); }
+.member-ride { color: #9ff9ff !important; font-weight: 700; margin-top: .4rem !important; }
+.member-bio { margin-top: .6rem !important; font-size: .9rem !important; }
+.leaders.many { grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); }
+.member-photo { width: 160px; height: 160px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: var(--bg-3); }
+.member-photo img { width: 100%; height: 100%; object-fit: cover; }
+.member-photo .monogram { margin: 0; }

@@ -12,6 +12,7 @@ window.H2H = {
   // Leave blank until confirmed. Shown on Contact and in the footer when set.
   phone: "",
   city: "",            // e.g. "Jackson, MI"
+  // Shown on Home > The Club until members are added in Admin > Members.
   leaders: [
     { name: "Stephen Parks Jr.", role: "Founder & President" },
     { name: "Gina McCoy", role: "Co-Founder" },
@@ -33,6 +34,28 @@ window.H2H = {
   donateUrl: "",
   donateButton: "Give online",
   donateNote: "Hood 2 Hood Rydas is a car club, not yet a registered 501(c)(3) nonprofit, so gifts are not tax-deductible.",
+
+  /* ------------------------------------------------------------------------
+     3b. THE ANTHEM: "Alien Skin" by June Arness (the scrolling bar at the top)
+     Upload the song to the repository as  alien-skin.mp3  and it plays once
+     when someone opens the site (browsers may wait for their first tap).
+     Until the file is there, the play button opens the song on YouTube.
+     ------------------------------------------------------------------------ */
+  anthem: {
+    file: "alien-skin.mp3",
+    title: "Alien Skin",
+    artist: "June Arness",
+    album: "The Art-of-Fact (Un Earthed)",
+    cover: "alien-skin-cover.jpg",
+    autoplayOnce: true,
+    links: [
+      { label: "Spotify", url: "https://open.spotify.com/track/1vo69EMsvWoANby4M0C7Wb" },
+      { label: "Apple Music", url: "https://music.apple.com/us/song/alien-skin/1725046124" },
+      { label: "iHeart", url: "https://www.iheart.com/artist/june-arness-42138078/songs/alien-skin-330534713/" },
+      { label: "Pandora", url: "https://www.pandora.com/artist/june-arness/the-art-of-fact-un-earthed/alien-skin/TRbhrdpvg4bgbXV" },
+      { label: "YouTube", url: "https://youtu.be/XSehO1X0FVE" }
+    ]
+  },
 
   /* ------------------------------------------------------------------------
      4. CARS BUILT INTO THE SITE
